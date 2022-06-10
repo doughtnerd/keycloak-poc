@@ -18,4 +18,4 @@ const providers: Provider[] = [
   }
 ]
 
-export default withInjector(AppRouter, providers);
+export default withInjector(<AppRouter />, providers);

@@ -1,11 +1,11 @@
 import { useCallback } from 'react'
-import { Navigate, useLocation } from 'react-router-dom'
+import { Navigate, To, useLocation } from 'react-router-dom'
 
 import { useKeycloak } from '@react-keycloak/web'
 
 const LoginPage = () => {
   const location = useLocation()
-  const currentLocationState = location.state || {
+  const currentLocationState: any = location.state || {
     from: { pathname: '/home' },
   }
 

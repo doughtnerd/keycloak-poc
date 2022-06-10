@@ -1,9 +1,12 @@
 {
   "realm": "wealth-bank",
-  "bearer-only": true,
   "auth-server-url": "http://keycloak:8080/auth/",
-  "ssl-required": "none",
+  "ssl-required": "external",
   "resource": "fe-api",
-  "confidential-port": 0,
-  "secret": "35f7c7af-6b28-47ce-a9aa-24ea8caf0545"
+  "verify-token-audience": true,
+  "credentials": {
+    "secret": "657f1791-8c41-438f-88b5-2f32679ba47c"
+  },
+  "use-resource-role-mappings": true,
+  "confidential-port": 0
 }
