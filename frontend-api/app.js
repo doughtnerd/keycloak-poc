@@ -1,12 +1,32 @@
 const express = require('express');
-const Keycloak = require('@doughtnerd/keycloak-connect');
+// const session = require('express-session');
+const Keycloak = require('keycloak-connect');
 const cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser')
 
-const keycloak = new Keycloak({});
+// app.use(session({
+//   secret: 'some secret',
+//   resave: false,
+//   saveUninitialized: true,
+//   store: memoryStore
+// }));
 
-app.use(cors());
+// var memoryStore = new session.MemoryStore();
+
+const keycloak = new Keycloak({}, {
+  realm: 'wealth-bank',
+  clientId: 'example-react-fe',
+  bearerOnly: true,
+  serverUrl: 'http://localhost:8080',
+  realmPublicKey: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxmwrcoRQNK4t/hIYrOKTN4k6ca2lxbWk5LdzNad+R42UAi5HYo7J0l+aS89/6NXE0BUEz1tSXgoLnP8RwdWoti4q2mt08TrTbqNMK4m1mHQAZsPZxQY1WJ4qSJ9a92Y/7u5HqI4vtEVx42R8vqnaq6h1WnPFeFya6Q15rxxs/TgBhNN1CV+NWKgyHNeCEHqUOULdODqmdw3mTXTk9b31h/ymUITy5yUw3YCYtoLcmqbmUz7lwTH+0XllyElyfc7izcwZou8Zk2DJNY2xMCS0HQ1zEVlgZ6aXPnz0mYvq5/XZQ0WuTu3hSB7AgXGbhAsCkgDUOLm6OK9GnnEhgT5CewIDAQAB"
+});
+
+console.log("HELLO!")
+
+app.use(cors({
+  origin: "*"
+}));
 
 app.use(bodyParser.json());
 
@@ -75,3 +95,4 @@ app.use('*', function (req, res) {
 app.listen(3001, function () {
   console.log('Started at port 3001');
 });
+

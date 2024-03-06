@@ -1,4 +1,4 @@
-version: '3.7'
+# version: '3.7'
 
 services:
   fe-app:
@@ -11,36 +11,55 @@ services:
       - keycloak-network
     volumes:
       - ./example-react-fe:/usr/src
+    depends_on:
+      fe-api:
+        condition: service_healthy
+        restart: true
 
   fe-api:
-    build:
-      context: ./frontend-api
-      dockerfile: Dockerfile
+    image: keycloak/fe-api
+    build: ./frontend-api
     ports: 
       - "3001:3001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://fe-api:3001"]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
     networks:
       - keycloak-network
+    depends_on:
+      keycloak:
+        condition: service_healthy
+        restart: true
 
   keycloak:
-    image: jboss/keycloak
+    # image: jboss/keycloak
+    image: quay.io/keycloak/keycloak:24.0.1
     ports:
       - "8080:8080"
     networks:
       - keycloak-network
     environment:
-      - "JAVA_OPTS_APPEND=\"-Dkeycloak.profile.feature.upload_scripts=enabled\""
-      - KEYCLOAK_USER=admin
-      - KEYCLOAK_PASSWORD=password
-      - KEYCLOAK_AUTH_SERVER_URL=http://keycloak:8080/auth
-      - KEYCLOAK_LOGLEVEL=DEBUG
-      - DB_VENDOR=mysql
-      - DB_ADDR=keycloak-mysql
-      - DB_DATABASE=keycloak
-      - DB_USER=keycloak
-      - DB_PASSWORD=keycloak
-      - DB_PORT=3306
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=password
+      - KC_HEALTH_ENABLED=true
+      # - KC_DB=mysql
+      # - KC_DB_URL=http://mysql:3306
+      # - KC_DB_USERNAME=keycloak
+      # - KC_DB_PASSWORD=keycloak
+    command: start-dev
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080;echo -e \"GET /health/ready HTTP/1.1\r\nhost: http://localhost\r\nConnection: close\r\n\r\n\" >&3;grep \"HTTP/1.1 200 OK\" <&3"]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
     depends_on:
-      - keycloak-mysql
+      keycloak-mysql:
+        condition: service_healthy
+        restart: true
     
   keycloak-mysql:
     image: mysql:5.7
@@ -53,12 +72,26 @@ services:
       MYSQL_RANDOM_ROOT_PASSWORD: "1"
     ports:
       - 3306:3306
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://keycloak-mysql:3306"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
   terraform:
     build:
       context: ./terraform
       dockerfile: Dockerfile
-    command: "/bin/bash -c ./wait-for-it.sh keycloak:8080 --timeout=30 -- terraform plan -out=tfplan -input=false && terraform apply -input=false tfplan"
+    # command: "plan -out=tfplan -input=false && terraform apply -input=false tfplan"
+    networks:
+      - keycloak-network
+    volumes:
+      - ./terraform:/usr/src
+    depends_on:
+      keycloak:
+        condition: service_healthy
+        restart: true
 
 networks:
   keycloak-network:

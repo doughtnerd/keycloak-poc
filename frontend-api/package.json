@@ -8,9 +8,10 @@
   "dependencies": {
     "@doughtnerd/keycloak-connect": "^16.0.0-dev",
     "cors": "^2.8.1",
-    "express": "^4.17.1",
-    "express-session": "^1.14.2",
-    "jsonwebtoken": "^8.5.1"
+    "express": "^4.18.3",
+    "express-session": "^1.18.0",
+    "jsonwebtoken": "^8.5.1",
+    "keycloak-connect": "^24.0.1"
   },
   "devDependencies": {}
 }

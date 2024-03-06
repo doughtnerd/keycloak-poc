@@ -2,7 +2,7 @@ terraform {
   required_providers {
     keycloak = {
       source  = "mrparkers/keycloak"
-      version = "3.5.1"
+      version = "4.4.0"
     }
   }
 }
@@ -11,7 +11,7 @@ provider "keycloak" {
   client_id = "admin-cli"
   username  = "admin"
   password  = "password"
-  url       = "http://localhost:8080"
+  url       = "http://keycloak:8080"
 }
 
 resource "keycloak_realm" "realm" {
@@ -27,11 +27,11 @@ resource "keycloak_realm" "realm" {
   remember_me                    = true
   login_with_email_allowed       = true
   ssl_required                   = "external"
-
+  
   # Realm theme settings
   login_theme   = "keycloak"
-  account_theme = "keycloak"
-  admin_theme   = "keycloak"
+  account_theme = "base"
+  admin_theme   = "base"
   email_theme   = "base"
 
   # Realm token settings

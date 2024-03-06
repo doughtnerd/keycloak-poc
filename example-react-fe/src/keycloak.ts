@@ -2,6 +2,10 @@ import Keycloak from 'keycloak-js';
 
 // Setup Keycloak instance as needed
 // Pass initialization options as required or leave blank to load from 'keycloak.json'
-const keycloak = Keycloak('/keycloak.json');
+const keycloak = new Keycloak({
+    url: 'http://localhost:8080',
+    realm: 'wealth-bank',
+    clientId: 'example-react-fe'
+});
 
 export default keycloak;
