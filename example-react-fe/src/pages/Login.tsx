@@ -16,10 +16,9 @@ const LoginPage = () => {
   }, [keycloak])
 
   if (keycloak?.authenticated) {
-    debugger;
     return <Navigate to={currentLocationState?.from as string} />
   }
-    
+
 
   return (
     <div>

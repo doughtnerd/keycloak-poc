@@ -27,7 +27,7 @@ resource "keycloak_realm" "realm" {
   remember_me                    = true
   login_with_email_allowed       = true
   ssl_required                   = "external"
-  
+
   # Realm theme settings
   login_theme   = "keycloak"
   account_theme = "base"
